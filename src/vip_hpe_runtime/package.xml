@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<package format="3">
+  <name>vip_hpe_runtime</name>
+  <version>0.0.1</version>
+  <description>Runtime for VIP mmWave HPE demo, inference stubs, and visualisation.</description>
+  <maintainer email="jonathan.williams@student.unsw.edu.au">Jonathan Williams</maintainer>
+  <license>UNSW</license>
+
+  <buildtool_depend>ament_python</buildtool_depend>
+
+  <depend>rclpy</depend>
+  <depend>std_msgs</depend>
+  <depend>vip_hpe_msgs</depend>
+  <depend>vip_hpe_core</depend>
+  <exec_depend>python3-numpy</exec_depend>
+
+  <test_depend>ament_copyright</test_depend>
+  <test_depend>ament_flake8</test_depend>
+  <test_depend>ament_pep257</test_depend>
+  <test_depend>python3-pytest</test_depend>
+
+  <export>
+    <build_type>ament_python</build_type>
+  </export>
+</package>

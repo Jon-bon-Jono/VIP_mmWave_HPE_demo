@@ -1,0 +1,15 @@
+name: vip_ros2_jazzy_dev
+channels:
+  - conda-forge
+  - robostack-jazzy
+dependencies:
+  - python=3.12
+  - ros-jazzy-desktop
+  - ros-dev-tools
+  - numpy>=2,<3
+  - scipy
+  - pyyaml
+  - pyserial=3.5
+  - matplotlib
+  - pandas
+  - opencv

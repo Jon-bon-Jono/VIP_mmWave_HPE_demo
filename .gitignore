@@ -1,0 +1,58 @@
+# ROS 2 / colcon build outputs
+build/
+install/
+log/
+
+# Model artifacts - commit deliberately via releases/LFS if needed
+*.pt
+*.pth
+*.onnx
+*.engine
+*.trt
+*.ckpt
+
+# Large data files
+*.pyc
+*.pickle
+*.pkl
+*.bag
+*.db3
+*.mcap
+
+# Keep the expected folder structure
+!data/
+!data/ll_replay/
+!data/ll_replay/.gitkeep
+
+# Python cache/build artifacts
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+.eggs/
+dist/
+build-lib/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Local environments
+.env
+.venv/
+venv/
+*.env
+
+# IDE/editor
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Windows
+Thumbs.db
+Desktop.ini

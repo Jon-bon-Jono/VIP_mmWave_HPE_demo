@@ -1,0 +1,26 @@
+<?xml version="1.0"?>
+<package format="3">
+  <name>vip_hpe_core</name>
+  <version>0.0.1</version>
+  <description>
+    Shared Python utilities for the VIP mmWave HPE system, including point-cloud
+    preprocessing, coordinate transforms, replay parsing, and model input preparation.
+    This package is intentionally ROS-free and PyTorch-free so it can be shared by
+    both the ROS 2 runtime and the PyTorch training framework.
+  </description>
+
+  <maintainer email="jonathan.williams@student.unsw.edu.au">Jonathan Williams</maintainer>
+  <license>UNSW</license>
+
+  <buildtool_depend>ament_python</buildtool_depend>
+
+  <exec_depend>python3-numpy</exec_depend>
+
+  <test_depend>ament_lint_auto</test_depend>
+  <test_depend>ament_lint_common</test_depend>
+  <test_depend>python3-pytest</test_depend>
+
+  <export>
+    <build_type>ament_python</build_type>
+  </export>
+</package>

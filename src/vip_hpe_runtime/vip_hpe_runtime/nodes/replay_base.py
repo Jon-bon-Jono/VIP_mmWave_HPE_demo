@@ -32,7 +32,7 @@ class ReplayCursor:
         return frame
 
 
-def load_replay_or_raise(pickle_path: str, gtrack_filtering: bool, fps_fallback: float) -> LivingLabSubjectReplay:
+def load_replay_or_raise(pickle_path: str, gtrack_filtering: bool = True, fps_fallback: float = 10.0) -> LivingLabSubjectReplay:
     path = Path(pickle_path).expanduser()
     if not pickle_path:
         raise ValueError('pickle_path parameter is empty')

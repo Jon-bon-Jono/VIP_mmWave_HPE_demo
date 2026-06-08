@@ -50,15 +50,20 @@ def frame_to_radar_msg(frame: LivingLabFrame, node, frame_id: str = 'radar_link'
     msg.points = points
     return msg
 
+def _fill_pose_people_from_array(
+    msg: PersonPose3DArray,
+    pose: Optional[np.ndarray],
+) -> PersonPose3DArray:
+    """
+    Fill msg.people from a parsed LivingLab pose array.
 
-def frame_to_pose_msg(frame: LivingLabFrame, node, frame_id: str = 'radar_link') -> PersonPose3DArray:
-    msg = PersonPose3DArray()
-    msg.header.stamp = stamp_from_node(node)
-    msg.header.frame_id = frame_id
-    msg.frame_index = int(frame.frame_index)
-    msg.source_timestamp = float(frame.source_timestamp)
+    Expected pose shape:
+        (num_people, num_joints, dims)
 
-    pose = frame.poses_3d_gt
+    LivingLabSubjectReplay._parse_3d_gt_pose already converts the raw Kinect
+    pose into the radar/plot coordinate convention, so this function should not
+    transform coordinates again.
+    """
     if pose is None:
         msg.people = []
         return msg
@@ -67,6 +72,7 @@ def frame_to_pose_msg(frame: LivingLabFrame, node, frame_id: str = 'radar_link')
     for person_idx in range(pose.shape[0]):
         person = PersonPose3D()
         person.person_id = int(person_idx)
+
         joints = []
         for joint_idx, name in enumerate(KINECT_JOINT_NAMES):
             joint = Joint3D()
@@ -74,13 +80,48 @@ def frame_to_pose_msg(frame: LivingLabFrame, node, frame_id: str = 'radar_link')
             joint.x = float(pose[person_idx, joint_idx, 0])
             joint.y = float(pose[person_idx, joint_idx, 1])
             joint.z = float(pose[person_idx, joint_idx, 2])
-            joint.confidence = float(pose[person_idx, joint_idx, 3]) if pose.shape[-1] >= 4 else 1.0
+            joint.confidence = (
+                float(pose[person_idx, joint_idx, 3])
+                if pose.shape[-1] >= 4
+                else 1.0
+            )
             joints.append(joint)
+
         person.joints = joints
         people.append(person)
+
     msg.people = people
     return msg
 
+def frame_to_pose_msg(frame: LivingLabFrame, node, frame_id: str = 'radar_link') -> PersonPose3DArray:
+    msg = PersonPose3DArray()
+    msg.header.stamp = stamp_from_node(node)
+    msg.header.frame_id = frame_id
+    msg.frame_index = int(frame.frame_index)
+    msg.source_timestamp = float(frame.source_timestamp)
+
+    return _fill_pose_people_from_array(msg, frame.poses_3d_gt)
+
+def pose_array_from_replay_frame(
+    frame: LivingLabFrame,
+    radar_msg: RadarFrame,
+) -> PersonPose3DArray:
+    """
+    Build a pose message from a replay frame, synchronised to an incoming
+    RadarFrame.
+
+    Used by PoseGtInferenceEmulatorNode.
+
+    The pose content comes from frame.poses_3d_gt.
+    The ROS header and frame_index come from the triggering RadarFrame.
+    """
+    msg = PersonPose3DArray()
+    msg.header.stamp = radar_msg.header.stamp
+    msg.header.frame_id = radar_msg.header.frame_id
+    msg.frame_index = int(radar_msg.frame_index)
+    msg.source_timestamp = float(frame.source_timestamp)
+
+    return _fill_pose_people_from_array(msg, frame.poses_3d_gt)
 
 def radar_msg_to_numpy(msg: RadarFrame) -> np.ndarray:
     arr = np.zeros((len(msg.points), 6), dtype=np.float32)

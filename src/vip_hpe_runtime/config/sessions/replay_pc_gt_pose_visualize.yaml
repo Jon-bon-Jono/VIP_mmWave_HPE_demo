@@ -1,0 +1,68 @@
+session:
+  name: replay_pc_gt_pose_visualize
+  workspace_root: "."
+  use_sim_time: false
+  log_level: info
+
+topics:
+  radar_points: /radar/points
+  pose_people: /pose/people
+  camera_frames: /camera/image
+  debug_status: /debug/replay_status
+
+sources:
+  radar:
+    enabled: true
+    kind: replay
+    params:
+      pickle_path: data/ll_replay/07_SW.pickle
+      start_index: 35000
+      end_index: -1
+      playback_hz: 10.0
+      loop: true
+      gtrack_filtering: true
+
+  camera:
+    enabled: false
+    kind: none
+    params: {}
+
+# pose:
+#   enabled: true
+#   kind: replay_gt
+#   params:
+#     pickle_path: data/ll_replay/07_SW.pickle
+#     start_index: 35000
+#     end_index: -1
+#     playback_hz: 10.0
+#     loop: true
+
+pose:
+  enabled: true
+  kind: replay_gt_synced
+  params:
+    pickle_path: data/ll_replay/07_SW.pickle
+    require_preprocessing_success: true
+    debug_log_every_n: 30
+
+# preprocessing:
+#   name: dummy_pointcloud
+#   params:
+#     expected_num_features: 6
+#     copy: true
+
+preprocessing:
+  preprocessor_config_path: src/vip_hpe_core/config/preprocessing/dummy_pointcloud.yaml
+
+sinks:
+  visualizer:
+    enabled: true
+    kind: matplotlib_3d
+    params:
+      pc_alpha: 0.1
+      boundless: false
+
+  recorder:
+    enabled: false
+    kind: none
+    params: {}

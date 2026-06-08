@@ -1,0 +1,4 @@
+name: dummy_pointcloud
+params:
+  expected_num_features: 6
+  copy: true

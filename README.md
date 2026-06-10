@@ -391,3 +391,66 @@ RadarFrame -> NumPy point cloud -> vip_hpe_core preprocessor -> pose output
 When a deployed model is available, the future live inference node should reuse the same preprocessing config and publish the same `/pose/people` message type.
 
 The training framework should live under `ml/` and should import `vip_hpe_core` for shared preprocessing. Do not add PyTorch training dependencies to the ROS runtime environment unless they are required for deployed inference.
+
+# Contributing
+
+The `main` branch is protected and should always remain stable, buildable, and suitable for others to pull from. Do not work directly on `main`. All development should happen on short-lived branches and be merged through pull requests.
+
+## Branches
+
+Use short-lived branches with one clear purpose. Before creating a branch, have a reasonably clear idea of what change you intend to make.
+
+Use the following branch prefixes:
+
+- `feature/...` — normal development branches. Open a PR into `main`.
+- `fix/...` — bug-fix branches. Open a PR into `main`.
+- `docs/...` — documentation-only branches.
+- `exp/...` — experimental branches for ML trials, rough prototypes, or risky ideas. These may never merge.
+
+Branches should be deleted after they are merged into `main`.
+
+## Commits
+
+Use one of the following commit prefixes:
+
+- `feat:` new functionality
+- `fix:` bug fix
+- `test:` tests added or updated
+- `docs:` documentation-only change
+- `refactor:` code restructure without intended behaviour change
+- `chore:` maintenance, cleanup, config, or minor repo-management changes
+
+Examples:
+
+```text
+feat: add point cloud voxelisation helper
+fix: handle empty radar frames
+test: add pose transform unit test
+docs: clarify ROS2 setup instructions
+refactor: move preprocessing constants into shared core
+chore: update gitignore
+```
+
+## Pull requests
+
+All changes to `main` must go through a pull request.
+
+PRs must be focused, reviewable, and linked to a clear task. Avoid large mixed-purpose PRs that change unrelated parts of the system.
+
+Before opening a PR, pull the latest `main` and make sure your branch is up to date. Push your work at the end of each development session so progress is not left only on a local machine.
+
+When a PR is opened, GitHub Actions will run automated tests. Some tests must pass before the PR can be merged. The current tests are basic, but more tests will be added over time. Passing the current tests is a minimum requirement, not proof that the change is correct.
+
+## Shared core code
+
+Changes to `hpe_vip_core` should be made carefully because this code may be used by both the ROS2 runtime and the PyTorch training framework.
+
+If a PR changes `hpe_vip_core`, the PR description must explain:
+
+- what changed;
+- why it changed;
+- whether the model input format changed;
+- whether training and runtime behaviour may both be affected;
+- whether tests were added or updated.
+
+Avoid duplicating preprocessing logic separately in the ROS2 and PyTorch code. Shared preprocessing should live in `hpe_vip_core` wherever possible.

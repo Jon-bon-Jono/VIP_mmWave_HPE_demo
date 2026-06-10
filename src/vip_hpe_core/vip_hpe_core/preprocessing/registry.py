@@ -2,6 +2,9 @@ from __future__ import annotations
 
 from typing import Any
 
+import rclpy
+
+
 from vip_hpe_core.preprocessing.base import BasePointCloudPreprocessor
 from vip_hpe_core.preprocessing.model_input import DummyPointCloudPreprocessor
 

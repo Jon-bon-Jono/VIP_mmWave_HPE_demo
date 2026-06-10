@@ -1,6 +1,8 @@
 from pathlib import Path
 import ast
 
+import rclpy
+
 BANNED_IMPORTS = {
     "rclpy",
     "vip_hpe_msgs",

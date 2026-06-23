@@ -99,6 +99,12 @@ Create the Conda environment:
 conda env create -f vip_ros2_jazzy_dev.yml
 ```
 
+Install the tested `setuptools` version for compatibility with the macOS environment:
+ 
+```bash
+conda install setuptools=75.8.0
+```
+
 Activate it:
 
 ```cmd
@@ -146,6 +152,79 @@ python -c "import vip_hpe_core.preprocessing.model_input as m; print(m.__file__)
 ```
 
 Both paths should point inside `src\...`, not only inside `build\...` or `install\...`.
+
+## macOS ROS 2 setup
+ 
+These instructions assume macOS, Conda, and the provided RoboStack-based ROS 2 Jazzy environment file. The current replay/visualisation demo has been tested with this setup.
+ 
+### 1. Create the Conda environment
+ 
+Open **Terminal** in the repository root:
+ 
+```bash
+cd /path/to/VIP_MMWAVE_HPE_DEMO
+```
+ 
+Create the Conda environment:
+ 
+```bash
+conda env create -f vip_ros2_jazzy_dev.yml
+```
+ 
+Activate it:
+ 
+```bash
+conda activate vip_ros2_jazzy_dev
+```
+ 
+This makes `python`, `ros2`, `colcon`, and the RoboStack ROS 2 packages available in the current terminal.
+ 
+### 2. Build the ROS 2 workspace
+ 
+Install the tested `setuptools` version:
+ 
+```bash
+conda install setuptools=75.8.0
+```
+ 
+From the repository root:
+ 
+```bash
+colcon build --merge-install --symlink-install
+```
+ 
+`colcon` builds the ROS 2 packages in `src/`.
+ 
+`--merge-install` keeps the install layout simple.
+ 
+`--symlink-install` makes development faster because many installed files point back to the source/build tree instead of being copied into the install space. With the `PYTHONPATH` override below, normal edits to Python files usually only require restarting the node/launch, not rebuilding.
+ 
+### 3. Set up each new terminal
+ 
+Every new terminal needs the environment activated, the built workspace loaded, the source-tree import override set, and the tested Matplotlib backend selected:
+ 
+```bash
+conda activate vip_ros2_jazzy_dev
+cd /path/to/VIP_MMWAVE_HPE_DEMO
+source install/setup.zsh
+export PYTHONPATH="$PWD/src/vip_hpe_core:$PWD/src/vip_hpe_runtime:$PYTHONPATH"
+export MPLBACKEND=TkAgg
+```
+ 
+The `source install/setup.zsh` command lets ROS 2 find local packages such as `vip_hpe_core`, `vip_hpe_msgs`, and `vip_hpe_runtime`. If you are using `bash` instead of `zsh`, use `source install/setup.sh` instead.
+ 
+The `PYTHONPATH` command forces Python to import the live source versions of `vip_hpe_core` and `vip_hpe_runtime` before installed/build copies.
+ 
+The `MPLBACKEND` command selects the tested Matplotlib backend for the animated plot window on macOS.
+ 
+You can verify the Python import paths with:
+ 
+```bash
+python -c "import vip_hpe_runtime.nodes.radar_replay_node as m; print(m.__file__)"
+python -c "import vip_hpe_core.preprocessing.model_input as m; print(m.__file__)"
+```
+ 
+Both paths should point inside `src/...`, not only inside `build/...` or `install/...`.
 
 ## Replay data
 
